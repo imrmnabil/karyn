@@ -1,0 +1,1420 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Karyn Wilkins — Content Manager</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --mauve:#5A3A5A;--mauve-mid:#876087;--mauve-light:#C4A8C4;
+  --pink:#C9949B;--pink-light:#E8C4C8;--pink-pale:#F5E8EA;
+  --cream:#FAF6F3;--cream-warm:#F0E8E2;
+  --text:#2C1F2C;--text-mid:#5A4A56;--text-soft:#8A7A86;
+  --white:#fff;
+  --sidebar:260px;--topbar:58px;
+  --radius:6px;
+  --shadow:0 2px 12px rgba(90,58,90,0.1);
+  --shadow-lg:0 8px 40px rgba(90,58,90,0.18);
+}
+html,body{height:100%;overflow:hidden;background:var(--cream)}
+body{font-family:'DM Sans',sans-serif;color:var(--text);display:flex;flex-direction:column}
+
+/* ── LOGIN ── */
+#login-screen{
+  position:fixed;inset:0;z-index:999;
+  background:linear-gradient(145deg,#3D2040 0%,var(--mauve) 60%,#7A4A7A 100%);
+  display:flex;align-items:center;justify-content:center;
+}
+#login-screen.gone{display:none}
+.login-wrap{text-align:center;animation:fadeUp 0.6s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.login-mark{
+  width:64px;height:64px;border-radius:50%;margin:0 auto 1.5rem;
+  background:linear-gradient(135deg,var(--pink-light),var(--mauve-light));
+  display:flex;align-items:center;justify-content:center;
+}
+.login-mark svg{opacity:0.9}
+.login-title{
+  font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;
+  color:#fff;margin-bottom:0.25rem;letter-spacing:0.02em;
+}
+.login-title em{font-style:italic;color:var(--pink-light)}
+.login-sub{font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:2.5rem}
+.login-card{
+  background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);
+  backdrop-filter:blur(12px);padding:2.5rem 2rem;border-radius:8px;
+  width:320px;
+}
+.login-btn{
+  width:100%;padding:0.85rem;background:var(--pink);color:#fff;border:none;
+  font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:500;
+  letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;
+  border-radius:var(--radius);transition:all 0.2s;
+}
+.login-btn:hover{background:#b8787f;transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,148,155,0.4)}
+.login-note{margin-top:1rem;font-size:0.73rem;color:rgba(255,255,255,0.35)}
+
+/* ── APP SHELL ── */
+#app{display:flex;flex-direction:column;height:100%}
+
+/* ── TOPBAR ── */
+.topbar{
+  height:var(--topbar);background:var(--white);
+  border-bottom:1px solid var(--pink-light);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 1.5rem;flex-shrink:0;
+  box-shadow:0 1px 0 var(--pink-light);
+  z-index:50;position:relative;
+}
+.topbar-brand{
+  display:flex;align-items:center;gap:10px;
+  font-family:'Cormorant Garamond',serif;font-size:1.2rem;
+  font-weight:400;color:var(--mauve);
+}
+.topbar-brand em{font-style:italic;color:var(--pink)}
+.topbar-pill{
+  font-size:0.6rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;
+  background:var(--pink-pale);color:var(--pink);
+  padding:3px 9px;border-radius:20px;border:1px solid var(--pink-light);
+}
+.topbar-right{display:flex;align-items:center;gap:0.75rem}
+.save-btn{
+  display:flex;align-items:center;gap:0.4rem;
+  background:var(--mauve);color:#fff;border:none;
+  padding:0.5rem 1.25rem;font-family:'DM Sans',sans-serif;
+  font-size:0.78rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;
+  cursor:pointer;border-radius:var(--radius);transition:all 0.2s;
+}
+.save-btn:hover{background:var(--mauve-mid);transform:translateY(-1px);box-shadow:0 4px 16px rgba(90,58,90,0.25)}
+.save-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none}
+.logout-btn{
+  background:none;border:1px solid var(--cream-warm);color:var(--text-soft);
+  padding:0.45rem 0.9rem;font-family:'DM Sans',sans-serif;
+  font-size:0.72rem;letter-spacing:0.06em;text-transform:uppercase;
+  cursor:pointer;border-radius:var(--radius);transition:all 0.2s;
+}
+.logout-btn:hover{border-color:var(--pink-light);color:var(--mauve)}
+.status-chip{
+  font-size:0.72rem;color:var(--text-soft);
+  display:flex;align-items:center;gap:0.4rem;
+  opacity:0;transition:opacity 0.3s;
+  white-space:nowrap;
+}
+.status-chip.show{opacity:1}
+.status-chip.ok{color:#5a9e5a}
+.status-chip.err{color:#c0504d}
+
+/* ── BODY ── */
+.app-body{flex:1;display:flex;overflow:hidden}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  width:var(--sidebar);flex-shrink:0;
+  background:var(--white);border-right:1px solid var(--pink-light);
+  overflow-y:auto;padding:1.25rem 0;
+}
+.sidebar-section{margin-bottom:1.75rem}
+.sidebar-label{
+  font-size:0.6rem;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--text-soft);padding:0 1.25rem;margin-bottom:0.4rem;
+}
+.nav-btn{
+  width:100%;display:flex;align-items:center;gap:0.75rem;
+  padding:0.65rem 1.25rem;background:none;border:none;
+  text-align:left;font-family:'DM Sans',sans-serif;font-size:0.86rem;
+  color:var(--text-mid);cursor:pointer;transition:all 0.15s;
+  border-left:3px solid transparent;
+}
+.nav-btn:hover{background:var(--cream);color:var(--mauve)}
+.nav-btn.active{
+  background:var(--pink-pale);color:var(--mauve);font-weight:500;
+  border-left-color:var(--pink);
+}
+.nav-icon{
+  width:30px;height:30px;border-radius:7px;
+  background:var(--cream-warm);display:flex;align-items:center;
+  justify-content:center;font-size:1rem;flex-shrink:0;transition:background 0.15s;
+}
+.nav-btn.active .nav-icon{background:var(--pink-pale)}
+.nav-count{
+  margin-left:auto;font-size:0.7rem;color:var(--text-soft);
+  background:var(--cream-warm);padding:2px 7px;border-radius:10px;
+}
+
+/* ── EDITOR AREA ── */
+.editor{flex:1;display:flex;overflow:hidden}
+
+/* ── FIELDS PANEL ── */
+.fields-panel{
+  width:400px;flex-shrink:0;
+  background:var(--cream);border-right:1px solid var(--pink-light);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.fields-top{
+  padding:1.25rem 1.5rem 1rem;
+  border-bottom:1px solid var(--pink-light);
+  background:var(--white);flex-shrink:0;
+}
+.fields-top h2{
+  font-family:'Cormorant Garamond',serif;font-size:1.5rem;
+  font-weight:400;color:var(--mauve);line-height:1.2;
+}
+.fields-top p{font-size:0.78rem;color:var(--text-soft);margin-top:3px}
+.fields-scroll{flex:1;overflow-y:auto;padding:1.25rem 1.5rem}
+
+.fgroup{margin-bottom:2rem}
+.fgroup-title{
+  font-size:0.62rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--pink);padding-bottom:0.6rem;margin-bottom:0.75rem;
+  border-bottom:1px solid var(--pink-light);
+}
+.field{margin-bottom:0.9rem}
+.field label{
+  display:block;font-size:0.76rem;font-weight:500;
+  color:var(--text-mid);margin-bottom:0.3rem;
+}
+.field input,.field textarea{
+  width:100%;font-family:'DM Sans',sans-serif;font-size:0.84rem;
+  color:var(--text);background:var(--white);
+  border:1px solid var(--pink-light);border-radius:4px;
+  padding:0.55rem 0.8rem;transition:border-color 0.2s,box-shadow 0.2s;
+  line-height:1.6;
+}
+.field input:focus,.field textarea:focus{
+  outline:none;border-color:var(--mauve-light);
+  box-shadow:0 0 0 3px rgba(90,58,90,0.07);
+}
+.field textarea{min-height:72px;resize:vertical}
+.field .hint{font-size:0.7rem;color:var(--text-soft);margin-top:3px}
+
+/* ── PREVIEW PANEL ── */
+.preview-panel{flex:1;display:flex;flex-direction:column;background:#e8e0e8;overflow:hidden}
+.preview-bar{
+  padding:0.7rem 1.25rem;background:var(--white);
+  border-bottom:1px solid var(--pink-light);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.preview-bar-left{display:flex;align-items:center;gap:0.6rem}
+.live-dot{
+  width:7px;height:7px;border-radius:50%;background:#5a9e5a;
+  animation:blink 2s ease infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.preview-label{font-size:0.75rem;color:var(--text-soft);font-weight:500}
+.preview-site-btn{
+  font-size:0.72rem;color:var(--mauve);text-decoration:none;
+  display:flex;align-items:center;gap:0.3rem;
+  border:1px solid var(--mauve-light);padding:4px 10px;
+  border-radius:20px;transition:all 0.2s;background:var(--pink-pale);
+}
+.preview-site-btn:hover{background:var(--mauve);color:#fff;border-color:var(--mauve)}
+.preview-wrap{flex:1;position:relative;overflow:hidden;padding:12px;display:flex;align-items:stretch}
+.preview-shadow{
+  flex:1;border-radius:8px;overflow:hidden;
+  box-shadow:0 8px 40px rgba(90,58,90,0.25);position:relative;
+  background:var(--white);
+}
+.preview-frame{width:100%;height:100%;border:none;border-radius:8px}
+.preview-loading{
+  position:absolute;inset:0;background:rgba(250,246,243,0.94);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:0.75rem;border-radius:8px;transition:opacity 0.3s;z-index:5;
+}
+.preview-loading.gone{opacity:0;pointer-events:none}
+.spinner{
+  width:32px;height:32px;border:2px solid var(--pink-light);
+  border-top-color:var(--mauve);border-radius:50%;
+  animation:spin 0.7s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.preview-loading p{font-size:0.82rem;color:var(--text-soft)}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:1.75rem;left:50%;
+  transform:translateX(-50%) translateY(60px);
+  background:var(--text);color:#fff;
+  padding:0.7rem 1.5rem;border-radius:var(--radius);
+  font-size:0.84rem;box-shadow:var(--shadow-lg);
+  z-index:9999;transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  display:flex;align-items:center;gap:0.5rem;white-space:nowrap;
+}
+.toast.up{transform:translateX(-50%) translateY(0)}
+.toast.green{background:#2e7d32}
+.toast.red{background:#c62828}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--pink-light);border-radius:4px}
+
+/* ── IMAGE FIELD ── */
+.img-field{margin-top:0.3rem}
+.img-preview-wrap{width:100%;height:120px;border-radius:4px;border:1px solid var(--pink-light);background:var(--cream-warm);overflow:hidden;display:flex;align-items:center;justify-content:center;margin-bottom:0.4rem;position:relative}
+.img-preview-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+.img-preview-placeholder{font-size:0.72rem;color:var(--text-soft);text-align:center;padding:0.5rem;position:absolute;pointer-events:none}
+.img-actions{display:flex;gap:0.4rem}
+.img-url-input{flex:1;font-family:'DM Sans',sans-serif;font-size:0.78rem;color:var(--text);background:var(--white);border:1px solid var(--pink-light);border-radius:4px;padding:0.45rem 0.6rem;min-width:0;transition:border-color 0.2s}
+.img-url-input:focus{outline:none;border-color:var(--mauve-light);box-shadow:0 0 0 3px rgba(90,58,90,0.07)}
+.img-upload-btn{background:var(--mauve);color:#fff;border:none;padding:0.45rem 0.65rem;border-radius:4px;font-family:'DM Sans',sans-serif;font-size:0.72rem;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background 0.2s}
+.img-upload-btn:hover{background:var(--mauve-mid)}
+.img-browse-btn{background:none;border:1px solid var(--pink-light);color:var(--text-soft);padding:0.45rem 0.6rem;border-radius:4px;font-size:0.72rem;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all 0.2s}
+.img-browse-btn:hover{border-color:var(--mauve-light);color:var(--mauve)}
+
+/* ── OVERLAY / MODAL ── */
+.overlay-bg{position:fixed;inset:0;background:rgba(44,31,44,0.55);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.2s}
+.overlay-bg.open{opacity:1;pointer-events:all}
+.modal{background:var(--white);border-radius:8px;box-shadow:var(--shadow-lg);padding:1.75rem 2rem;width:500px;max-width:95vw;max-height:85vh;overflow-y:auto;position:relative}
+.modal-xl{width:820px;max-width:96vw}
+.modal h3{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:400;color:var(--mauve);margin-bottom:1rem}
+.modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--text-soft);line-height:1;padding:0.25rem 0.5rem}
+.modal-close:hover{color:var(--text)}
+.modal-field{margin-bottom:0.9rem}
+.modal-field label{display:block;font-size:0.76rem;font-weight:500;color:var(--text-mid);margin-bottom:0.3rem}
+.modal-field input,.modal-field select{width:100%;font-family:'DM Sans',sans-serif;font-size:0.84rem;color:var(--text);background:var(--white);border:1px solid var(--pink-light);border-radius:4px;padding:0.55rem 0.8rem;transition:border-color 0.2s}
+.modal-field input:focus,.modal-field select:focus{outline:none;border-color:var(--mauve-light);box-shadow:0 0 0 3px rgba(90,58,90,0.07)}
+.modal-actions{display:flex;gap:0.6rem;justify-content:flex-end;margin-top:1.25rem}
+.modal-btn{padding:0.55rem 1.25rem;border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:0.8rem;font-weight:500;cursor:pointer;transition:all 0.2s}
+.modal-btn-primary{background:var(--mauve);color:#fff}
+.modal-btn-primary:hover{background:var(--mauve-mid)}
+.modal-btn-cancel{background:none;border:1px solid var(--cream-warm);color:var(--text-soft)}
+.modal-btn-cancel:hover{border-color:var(--pink-light);color:var(--mauve)}
+.modal-btn-danger{background:#c62828;color:#fff}
+.modal-btn-danger:hover{background:#a32121}
+
+/* ── MEDIA LIBRARY ── */
+.media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:0.6rem;margin-top:0.75rem}
+.media-thumb{border-radius:4px;overflow:hidden;border:2px solid transparent;cursor:pointer;position:relative;aspect-ratio:1;background:var(--cream-warm);transition:border-color 0.15s}
+.media-thumb:hover{border-color:var(--mauve-light)}
+.media-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.media-thumb-name{position:absolute;bottom:0;left:0;right:0;background:rgba(44,31,44,0.72);color:#fff;font-size:0.58rem;padding:2px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0;transition:opacity 0.15s}
+.media-thumb:hover .media-thumb-name{opacity:1}
+.media-upload-zone{border:2px dashed var(--pink-light);border-radius:4px;padding:1.25rem;text-align:center;cursor:pointer;color:var(--text-soft);font-size:0.8rem;transition:border-color 0.2s;margin-bottom:0.75rem}
+.media-upload-zone:hover{border-color:var(--mauve-light);color:var(--mauve)}
+.media-empty{text-align:center;color:var(--text-soft);font-size:0.82rem;padding:2rem 0}
+
+/* ── USERS PANEL ── */
+.users-wrap{overflow-x:auto}
+.users-table{width:100%;border-collapse:collapse;font-size:0.82rem}
+.users-table th,.users-table td{padding:0.6rem 0.75rem;border-bottom:1px solid var(--pink-light);text-align:left}
+.users-table th{font-size:0.68rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-soft)}
+.users-table td select{font-family:'DM Sans',sans-serif;font-size:0.8rem;color:var(--text);background:var(--white);border:1px solid var(--pink-light);border-radius:4px;padding:0.3rem 0.5rem}
+.users-add-section{margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--pink-light)}
+.users-add-section h4{font-size:0.78rem;font-weight:600;color:var(--text-mid);margin-bottom:0.75rem}
+.users-add-row{display:flex;gap:0.5rem;flex-wrap:wrap}
+.users-add-row input,.users-add-row select{font-family:'DM Sans',sans-serif;font-size:0.78rem;border:1px solid var(--pink-light);background:var(--white);border-radius:4px;padding:0.45rem 0.65rem;color:var(--text)}
+.users-add-row input:focus,.users-add-row select:focus{outline:none;border-color:var(--mauve-light)}
+
+/* ── AUDIT LOG ── */
+.audit-list{display:flex;flex-direction:column;gap:0.5rem;margin-top:0.75rem}
+.audit-row{border:1px solid var(--pink-light);border-radius:6px;background:var(--cream);padding:0.8rem 0.9rem}
+.audit-top{display:flex;justify-content:space-between;gap:1rem;align-items:flex-start}
+.audit-action{font-size:0.8rem;font-weight:600;color:var(--mauve)}
+.audit-meta{font-size:0.72rem;color:var(--text-soft);margin-top:0.2rem}
+.audit-time{font-size:0.72rem;color:var(--text-soft);white-space:nowrap}
+.audit-empty{text-align:center;color:var(--text-soft);font-size:0.82rem;padding:1.5rem 0}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-wrap">
+    <div class="login-mark">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    </div>
+    <div class="login-title">Karyn Wilkins <em>Hypnotherapy</em></div>
+    <div class="login-sub">Content Manager</div>
+    <div class="login-card">
+      <input id="login-email" type="email" placeholder="Email" style="width:100%;margin-bottom:.55rem;padding:.7rem .75rem;border:1px solid rgba(255,255,255,.25);border-radius:6px;background:rgba(255,255,255,.1);color:#fff;"/>
+      <input id="login-password" type="password" placeholder="Password" style="width:100%;margin-bottom:.55rem;padding:.7rem .75rem;border:1px solid rgba(255,255,255,.25);border-radius:6px;background:rgba(255,255,255,.1);color:#fff;"/>
+      <button class="login-btn" onclick="doLogin()">Sign In to Edit</button>
+      <p class="login-note" id="login-note">Enter your email &amp; password to access the editor</p>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-brand">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--mauve)" stroke-width="1.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Karyn Wilkins <em>Hypnotherapy</em>
+      <span class="topbar-pill">CMS</span>
+    </div>
+    <div class="topbar-right">
+      <span class="status-chip" id="status"></span>
+      <button class="logout-btn" onclick="openMediaPicker()">Upload Media</button>
+      <button class="save-btn" id="save-btn" onclick="saveContent()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Save &amp; Publish
+      </button>
+      <button class="logout-btn" onclick="doLogout()">Logout</button>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="app-body">
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Pages</div>
+        <button class="nav-btn active" data-page="home" onclick="go('home',this)">
+          <span class="nav-icon">🏠</span> Home
+        </button>
+        <button class="nav-btn" data-page="about" onclick="go('about',this)">
+          <span class="nav-icon">👩</span> About Me
+        </button>
+        <button class="nav-btn" data-page="weightloss" onclick="go('weightloss',this)">
+          <span class="nav-icon">⚖️</span> Weight Loss
+        </button>
+        <button class="nav-btn" data-page="menopause" onclick="go('menopause',this)">
+          <span class="nav-icon">🌸</span> Menopause
+        </button>
+        <button class="nav-btn" data-page="booking" onclick="go('booking',this)">
+          <span class="nav-icon">📅</span> Booking
+        </button>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Settings</div>
+        <button class="nav-btn" data-page="site" onclick="go('site',this)">
+          <span class="nav-icon">📞</span> Contact Info
+        </button>
+      </div>
+        <div class="sidebar-section">
+          <div class="sidebar-label">Admin</div>
+          <button class="nav-btn" onclick="openMediaLib()">
+            <span class="nav-icon">🖼️</span> Media Library
+          </button>
+          <button class="nav-btn" onclick="openUsersPanel()">
+            <span class="nav-icon">👥</span> Users
+          </button>
+            <button class="nav-btn" onclick="openAuditLog()">
+              <span class="nav-icon">🧾</span> Audit Log
+            </button>
+          <button class="nav-btn" onclick="openChangePw()">
+            <span class="nav-icon">🔑</span> Change Password
+          </button>
+        </div>
+    </nav>
+
+    <!-- EDITOR -->
+    <div class="editor">
+
+      <!-- FIELDS -->
+      <div class="fields-panel">
+        <div class="fields-top">
+          <h2 id="f-title">Home Page</h2>
+          <p id="f-desc">Edit your homepage content</p>
+        </div>
+        <div class="fields-scroll" id="f-body"></div>
+      </div>
+
+      <!-- PREVIEW -->
+      <div class="preview-panel">
+        <div class="preview-bar">
+          <div class="preview-bar-left">
+            <div class="live-dot"></div>
+            <span class="preview-label">Live Site Preview</span>
+          </div>
+          <a class="preview-site-btn" href="/" target="_blank">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Open Live Site
+          </a>
+        </div>
+        <div class="preview-wrap">
+          <div class="preview-shadow">
+            <div class="preview-loading" id="pload">
+              <div class="spinner"></div>
+              <p>Loading preview…</p>
+            </div>
+            <iframe class="preview-frame" id="pframe" src="/" onload="frameLoaded()"></iframe>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ── MEDIA LIBRARY MODAL ── -->
+<div class="overlay-bg" id="media-overlay" onclick="if(event.target===this)closeMediaLib()">
+  <div class="modal modal-xl">
+    <button class="modal-close" onclick="closeMediaLib()">✕</button>
+    <h3>Media Library</h3>
+    <div class="media-upload-zone" onclick="document.getElementById('media-lib-input').click()">
+      Click to upload a new image (PNG, JPG, WebP)
+    </div>
+    <input id="media-lib-input" type="file" accept="image/png,image/jpeg,image/webp" style="display:none" onchange="onMediaLibUpload(event)"/>
+    <div class="media-grid" id="media-grid"></div>
+  </div>
+</div>
+
+<!-- ── CHANGE PASSWORD MODAL ── -->
+<div class="overlay-bg" id="pw-overlay" onclick="if(event.target===this)closeChangePw()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeChangePw()">✕</button>
+    <h3>Change Password</h3>
+    <div class="modal-field">
+      <label>Current Password</label>
+      <input type="password" id="pw-current" placeholder="Your current password"/>
+    </div>
+    <div class="modal-field">
+      <label>New Password</label>
+      <input type="password" id="pw-new" placeholder="At least 8 characters"/>
+    </div>
+    <div class="modal-field">
+      <label>Confirm New Password</label>
+      <input type="password" id="pw-confirm" placeholder="Repeat new password"/>
+    </div>
+    <p id="pw-note" style="font-size:0.76rem;color:var(--text-soft);margin-top:0.25rem"></p>
+    <div class="modal-actions">
+      <button class="modal-btn modal-btn-cancel" onclick="closeChangePw()">Cancel</button>
+      <button class="modal-btn modal-btn-primary" onclick="changePassword()">Update Password</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── USERS PANEL MODAL ── -->
+<div class="overlay-bg" id="users-overlay" onclick="if(event.target===this)closeUsersPanel()">
+  <div class="modal modal-xl">
+    <button class="modal-close" onclick="closeUsersPanel()">✕</button>
+    <h3>User Management</h3>
+    <div class="users-wrap">
+      <table class="users-table">
+        <thead><tr><th>Email</th><th>Role</th><th>Actions</th></tr></thead>
+        <tbody id="users-tbody"></tbody>
+      </table>
+    </div>
+    <div class="users-add-section">
+      <h4>Add New User</h4>
+      <div class="users-add-row">
+        <input type="email" id="new-user-email" placeholder="Email address" style="flex:2;min-width:200px"/>
+        <input type="password" id="new-user-password" placeholder="Password (min 8 chars)" style="flex:2;min-width:180px"/>
+        <select id="new-user-role">
+          <option value="editor">Editor</option>
+          <option value="admin">Admin</option>
+        </select>
+        <button class="modal-btn modal-btn-primary" onclick="createUser()" style="white-space:nowrap">Add User</button>
+      </div>
+      <p id="users-note" style="font-size:0.76rem;color:var(--text-soft);margin-top:0.5rem"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ── AUDIT LOG MODAL ── -->
+<div class="overlay-bg" id="audit-overlay" onclick="if(event.target===this)closeAuditLog()">
+  <div class="modal modal-xl">
+    <button class="modal-close" onclick="closeAuditLog()">✕</button>
+    <h3>Audit Log</h3>
+    <div class="modal-actions" style="justify-content:flex-start;margin-top:0;margin-bottom:0.5rem">
+      <button class="modal-btn modal-btn-cancel" onclick="refreshAuditLog()">Refresh</button>
+    </div>
+    <div class="audit-list" id="audit-list"></div>
+  </div>
+</div>
+
+<!-- Shared hidden input for inline image-field uploads -->
+<input id="img-field-input" type="file" accept="image/png,image/jpeg,image/webp" style="display:none" onchange="onInlineImgUpload(event)"/>
+<input id="media-input" type="file" accept="image/png,image/jpeg,image/webp,application/pdf" style="display:none" onchange="onMediaSelected(event)"/>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  CONFIG — all editable fields across every page
+// ═══════════════════════════════════════════════════════
+const PAGES = {
+  home:{
+    title:'Home Page',desc:'Hero, pillars, quote banner and CTA',
+    preview:'home',
+    groups:[
+      {title:'Hero Section',fields:[
+        {k:'home.hero_eyebrow',        l:'Eyebrow (small text above heading)', t:'input'},
+        {k:'home.hero_heading',        l:'Main Heading',                        t:'input'},
+        {k:'home.hero_heading_italic', l:'Italic / Pink Phrase',               t:'input'},
+        {k:'home.hero_para',           l:'Hero Paragraph',                     t:'textarea'},
+      ]},
+        {title:'Hero Image',fields:[
+          {k:'home.img_hero', l:'Hero Photo', t:'image'},
+        ]},
+      {title:'Three Pillars',fields:[
+        {k:'home.pillar1_title',l:'Pillar 1 — Title',      t:'input'},
+        {k:'home.pillar1_desc', l:'Pillar 1 — Description',t:'textarea'},
+        {k:'home.pillar2_title',l:'Pillar 2 — Title',      t:'input'},
+        {k:'home.pillar2_desc', l:'Pillar 2 — Description',t:'textarea'},
+        {k:'home.pillar3_title',l:'Pillar 3 — Title',      t:'input'},
+        {k:'home.pillar3_desc', l:'Pillar 3 — Description',t:'textarea'},
+      ]},
+        {title:'Pillar Card Images',fields:[
+          {k:'home.img_card_wl',   l:'Weight Loss Card Image',  t:'image'},
+          {k:'home.img_card_meno', l:'Menopause Card Image',    t:'image'},
+        ]},
+      {title:'Quote Banner (purple section)',fields:[
+        {k:'home.quote_text',l:'Quote Text',t:'textarea'},
+      ]},
+      {title:'Mid-page Editorial Section',fields:[
+        {k:'home.editorial_eyebrow',l:'Eyebrow Text', t:'input'},
+        {k:'home.editorial_heading',l:'Heading',      t:'input'},
+        {k:'home.editorial_para1', l:'Paragraph 1',  t:'textarea'},
+        {k:'home.editorial_para2', l:'Paragraph 2',  t:'textarea'},
+      ]},
+        {title:'Editorial Image',fields:[
+          {k:'home.img_editorial', l:'Side Photo', t:'image'},
+        ]},
+      {title:'Bottom Call to Action',fields:[
+        {k:'home.cta_eyebrow',l:'Eyebrow',  t:'input'},
+        {k:'home.cta_heading',l:'Heading',  t:'input'},
+        {k:'home.cta_para',   l:'Paragraph',t:'textarea'},
+      ]},
+    ]
+  },
+  about:{
+    title:'About Page',desc:'Your bio, approach steps and testimonials',
+    preview:'about',
+    groups:[
+      {title:'Your Bio',fields:[
+        {k:'about.bio_para1',l:'Bio Paragraph 1',t:'textarea'},
+        {k:'about.bio_para2',l:'Bio Paragraph 2',t:'textarea'},
+      ]},
+        {title:'Profile Photo',fields:[
+          {k:'about.img_headshot', l:'Headshot / Hero Photo', t:'image'},
+        ]},
+      {title:'My Approach — 3 Steps',fields:[
+        {k:'about.approach_intro',  l:'Intro Text (above the 3 cards)',t:'textarea'},
+        {k:'about.approach1_title', l:'Step 1 — Title',               t:'input'},
+        {k:'about.approach1_desc',  l:'Step 1 — Description',         t:'textarea'},
+        {k:'about.approach2_title', l:'Step 2 — Title',               t:'input'},
+        {k:'about.approach2_desc',  l:'Step 2 — Description',         t:'textarea'},
+        {k:'about.approach3_title', l:'Step 3 — Title',               t:'input'},
+        {k:'about.approach3_desc',  l:'Step 3 — Description',         t:'textarea'},
+      ]},
+      {title:'Testimonials',fields:[
+        {k:'about.t1_text',  l:'Testimonial 1 — Quote', t:'textarea'},
+        {k:'about.t1_author',l:'Testimonial 1 — Name',  t:'input'},
+        {k:'about.t2_text',  l:'Testimonial 2 — Quote', t:'textarea'},
+        {k:'about.t2_author',l:'Testimonial 2 — Name',  t:'input'},
+        {k:'about.t3_text',  l:'Testimonial 3 — Quote', t:'textarea'},
+        {k:'about.t3_author',l:'Testimonial 3 — Name',  t:'input'},
+        {k:'about.t4_text',  l:'Testimonial 4 — Quote', t:'textarea'},
+        {k:'about.t4_author',l:'Testimonial 4 — Name',  t:'input'},
+      ]},
+      {title:'Call to Action',fields:[
+        {k:'about.cta_eyebrow',l:'Eyebrow',  t:'input'},
+        {k:'about.cta_heading',l:'Heading',  t:'input'},
+        {k:'about.cta_para',   l:'Paragraph',t:'textarea'},
+      ]},
+    ]
+  },
+  weightloss:{
+    title:'Weight Loss Page',desc:'Both programme descriptions and explainer',
+    preview:'weightloss',
+    groups:[
+      {title:'Hero Section',fields:[
+        {k:'weightloss.hero_eyebrow',        l:'Eyebrow',      t:'input'},
+        {k:'weightloss.hero_heading',        l:'Main Heading', t:'input'},
+        {k:'weightloss.hero_heading_italic', l:'Italic Part',  t:'input'},
+        {k:'weightloss.hero_para',           l:'Paragraph',    t:'textarea'},
+      ]},
+      {title:'Programme 1 — GLP-1 Exit',fields:[
+        {k:'weightloss.prog1_heading',l:'Heading',         t:'input'},
+        {k:'weightloss.prog1_intro',  l:'Intro Paragraph', t:'textarea'},
+        {k:'weightloss.prog1_detail', l:'Detail Paragraph',t:'textarea'},
+      ]},
+        {title:'Programme Images',fields:[
+          {k:'weightloss.img_prog1',   l:'Programme 1 Photo', t:'image'},
+          {k:'weightloss.img_prog2',   l:'Programme 2 Photo', t:'image'},
+          {k:'weightloss.img_sidebar', l:'FAQ Sidebar Photo', t:'image'},
+        ]},
+      {title:'Programme 2 — Medication Alternative',fields:[
+        {k:'weightloss.prog2_heading',l:'Heading',         t:'input'},
+        {k:'weightloss.prog2_intro',  l:'Intro Paragraph', t:'textarea'},
+        {k:'weightloss.prog2_detail', l:'Detail Paragraph',t:'textarea'},
+      ]},
+      {title:'Why This Is Different',fields:[
+        {k:'weightloss.explainer_heading',l:'Heading',  t:'input'},
+        {k:'weightloss.explainer_para',   l:'Paragraph',t:'textarea'},
+      ]},
+      {title:'Call to Action',fields:[
+        {k:'weightloss.cta_eyebrow',l:'Eyebrow',  t:'input'},
+        {k:'weightloss.cta_heading',l:'Heading',  t:'input'},
+        {k:'weightloss.cta_para',   l:'Paragraph',t:'textarea'},
+      ]},
+    ]
+  },
+  menopause:{
+    title:'Menopause Page',desc:'Stats, intro, evidence and quote sections',
+    preview:'menopause',
+    groups:[
+      {title:'Hero Section',fields:[
+        {k:'menopause.hero_heading',        l:'Main Heading',  t:'input'},
+        {k:'menopause.hero_heading_italic', l:'Italic Word',   t:'input'},
+        {k:'menopause.hero_para',           l:'Hero Paragraph',t:'textarea'},
+      ]},
+        {title:'Gallery Images',fields:[
+          {k:'menopause.img_gallery1', l:'Gallery Photo 1', t:'image'},
+          {k:'menopause.img_gallery2', l:'Gallery Photo 2', t:'image'},
+        ]},
+      {title:'Statistics Badge',fields:[
+        {k:'menopause.stat_number',l:'Stat Number (e.g. 74%)',t:'input'},
+        {k:'menopause.stat_label', l:'Stat Label',            t:'input'},
+        {k:'menopause.stat_source',l:'Source Note',           t:'input'},
+      ]},
+      {title:'Introduction',fields:[
+        {k:'menopause.intro_heading',l:'Heading',        t:'input'},
+        {k:'menopause.intro_para1',  l:'Paragraph 1',   t:'textarea'},
+        {k:'menopause.intro_para2',  l:'Paragraph 2',   t:'textarea'},
+        {k:'menopause.intro_italic', l:'Italic Tagline', t:'input'},
+      ]},
+      {title:'Evidence Section',fields:[
+        {k:'menopause.evidence_para1',       l:'Evidence Paragraph 1',t:'textarea'},
+        {k:'menopause.evidence_para2',       l:'Evidence Paragraph 2',t:'textarea'},
+        {k:'menopause.featured_quote',       l:'Featured Quote',      t:'textarea'},
+        {k:'menopause.featured_quote_author',l:'Quote Author',        t:'input'},
+      ]},
+      {title:'Call to Action',fields:[
+        {k:'menopause.cta_eyebrow',l:'Eyebrow',  t:'input'},
+        {k:'menopause.cta_heading',l:'Heading',  t:'input'},
+        {k:'menopause.cta_para',   l:'Paragraph',t:'textarea'},
+      ]},
+    ]
+  },
+  booking:{
+    title:'Booking Page',desc:'Sessions, prices and contact note',
+    preview:'booking',
+    groups:[
+      {title:'Hero Section',fields:[
+        {k:'booking.hero_heading',l:'Hero Heading',  t:'input'},
+        {k:'booking.hero_para',   l:'Hero Paragraph',t:'textarea'},
+      ]},
+      {title:'Free Consultation Block',fields:[
+        {k:'booking.consult_heading',l:'Section Heading',t:'input'},
+        {k:'booking.consult_para',   l:'Description',    t:'textarea'},
+      ]},
+      {title:'Session Types & Prices',fields:[
+        {k:'booking.s1_name',l:'Session 1 — Name',          t:'input'},
+        {k:'booking.s1_dur', l:'Session 1 — Duration/Price',t:'input'},
+        {k:'booking.s2_name',l:'Session 2 — Name',          t:'input'},
+        {k:'booking.s2_dur', l:'Session 2 — Duration/Price',t:'input'},
+        {k:'booking.s3_name',l:'Session 3 — Name',          t:'input'},
+        {k:'booking.s3_dur', l:'Session 3 — Duration/Price',t:'input'},
+        {k:'booking.s4_name',l:'Session 4 — Name',          t:'input'},
+        {k:'booking.s4_dur', l:'Session 4 — Duration/Price',t:'input'},
+        {k:'booking.booking_note',l:'Booking Note',         t:'textarea'},
+      ]},
+    ]
+  },
+  site:{
+    title:'Contact & Site Info',desc:'Phone, email and footer text',
+    preview:'home',
+    groups:[
+      {title:'Contact Details',fields:[
+        {k:'site.phone',    l:'Phone / WhatsApp Number',t:'input'},
+        {k:'site.email',    l:'Email Address',          t:'input'},
+        {k:'site.copyright',l:'Footer Copyright Text',  t:'input'},
+      ]},
+        {title:'Site Logo',fields:[
+          {k:'site.logo_url', l:'Logo Image', t:'image'},
+        ]},
+    ]
+  },
+};
+
+// ═══════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════
+let DATA = {};
+let currentUser = null;
+let currentPage = 'home';
+let previewDebounce = null;
+
+// ═══════════════════════════════════════════════════════
+//  AUTH
+// ═══════════════════════════════════════════════════════
+const SAVE_BUTTON_HTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save &amp; Publish`;
+
+async function api(path, options = {}) {
+  const response = await fetch(path, {
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(options.headers || {})
+    },
+    ...options
+  });
+
+  if (!response.ok) {
+    const errorPayload = await response.json().catch(() => ({}));
+    throw new Error(errorPayload.error || `Request failed (${response.status})`);
+  }
+
+  if (response.status === 204) return null;
+  return response.json();
+}
+
+window.addEventListener('load', async () => {
+  try {
+    const me = await api('/api/auth/me');
+    if (me && me.user) {
+      currentUser = me.user;
+      await boot();
+      return;
+    }
+  } catch (_e) {
+    // Keep login screen visible if session check fails.
+  }
+  document.getElementById('login-screen').classList.remove('gone');
+  document.getElementById('app').style.display = 'none';
+});
+
+async function doLogin(){
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const note = document.getElementById('login-note');
+
+  if (!email || !password) {
+    note.textContent = 'Email and password are required.';
+    return;
+  }
+
+  try {
+    const payload = await api('/api/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password })
+    });
+    currentUser = payload.user;
+    note.textContent = 'Signed in successfully.';
+    await boot();
+  } catch (error) {
+    note.textContent = error.message;
+  }
+}
+
+async function doLogout(){
+  try {
+    await api('/api/auth/logout', { method: 'POST' });
+  } catch (_e) {
+    // Ignore logout errors and clear local state.
+  }
+  currentUser = null;
+  document.getElementById('login-screen').classList.remove('gone');
+  document.getElementById('app').style.display = 'none';
+}
+
+async function boot(){
+  document.getElementById('login-screen').classList.add('gone');
+  document.getElementById('app').style.display='flex';
+  await loadData();
+  go('home', document.querySelector('.nav-btn[data-page="home"]'));
+}
+
+// ═══════════════════════════════════════════════════════
+//  LOAD DATA FROM BACKEND API
+// ═══════════════════════════════════════════════════════
+async function loadData(){
+  try {
+    DATA = await api('/api/content');
+  } catch(e) {
+    DATA = defaults();
+    toast('Content load failed, using local defaults.','red');
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  SAVE DATA TO BACKEND API
+// ═══════════════════════════════════════════════════════
+async function saveContent(){
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+  setStatus('','');
+
+  try {
+    DATA = await api('/api/content', {
+      method: 'PUT',
+      body: JSON.stringify(DATA)
+    });
+
+    toast('✓ Published to CMS backend','green');
+    setStatus('✓ Saved','ok');
+    setTimeout(()=>{
+      reloadPreview();
+      setStatus('','');
+    }, 800);
+
+  } catch(err){
+    console.error(err);
+    toast('⚠ Could not save: '+err.message,'red');
+    setStatus('Save failed','err');
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = SAVE_BUTTON_HTML;
+}
+
+let _mediaLibTarget = null;
+
+async function openMediaPicker(){
+  document.getElementById('media-input').click();
+}
+
+async function openMediaLib(fieldKey){
+  _mediaLibTarget = fieldKey || null;
+  document.getElementById('media-overlay').classList.add('open');
+  await refreshMediaGrid();
+}
+
+function closeMediaLib(){
+  document.getElementById('media-overlay').classList.remove('open');
+  _mediaLibTarget = null;
+}
+
+async function refreshMediaGrid(){
+  const grid = document.getElementById('media-grid');
+  grid.innerHTML = '<p style="color:var(--text-soft);font-size:0.8rem">Loading…</p>';
+  try {
+    const files = await api('/api/media');
+    if(!files || !files.length){
+      grid.innerHTML = '<p class="media-empty">No media uploaded yet. Use the zone above to upload your first image.</p>';
+      return;
+    }
+    grid.innerHTML = files.map(f => {
+      const thumb = f.publicUrl;
+      const name = f.original_name || f.stored_name || '';
+      const safeUrl = String(thumb || '').replace(/'/g, '&#39;');
+      return `<div class="media-thumb" onclick="selectMedia('${safeUrl}')" title="${esc(name)}">
+        <img src="${esc(thumb)}" loading="lazy" onerror="this.parentElement.style.display='none'"/>
+        <div class="media-thumb-name">${esc(name)}</div>
+      </div>`;
+    }).join('');
+  } catch(e){
+    grid.innerHTML = `<p class="media-empty">Could not load media: ${esc(e.message)}</p>`;
+  }
+}
+
+function selectMedia(url){
+  if(_mediaLibTarget){
+    setVal(_mediaLibTarget, url);
+    const input = document.querySelector(`.img-url-input[data-k="${_mediaLibTarget}"]`);
+    if(input){ input.value = url; onImgUrlInput(input); }
+    toast('Image selected', 'green');
+  } else {
+    navigator.clipboard.writeText(url).then(()=>toast('URL copied to clipboard','green')).catch(()=>toast(url,'green'));
+  }
+  closeMediaLib();
+}
+
+async function onMediaLibUpload(event){
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    const response = await fetch('/api/media/upload', {
+      method: 'POST',
+      credentials: 'include',
+      body: formData
+    });
+
+    if (!response.ok) {
+      const payload = await response.json().catch(() => ({}));
+      throw new Error(payload.error || `Upload failed (${response.status})`);
+    }
+
+    const uploaded = await response.json();
+    toast(`Uploaded: ${uploaded.publicUrl}`, 'green');
+    if (_mediaLibTarget) {
+      selectMedia(uploaded.publicUrl);
+      return;
+    }
+    await refreshMediaGrid();
+  } catch (error) {
+    toast(`Upload failed: ${error.message}`, 'red');
+  } finally {
+    event.target.value = '';
+  }
+}
+
+async function onMediaSelected(event){
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    const response = await fetch('/api/media/upload', {
+      method: 'POST',
+      credentials: 'include',
+      body: formData
+    });
+
+    if (!response.ok) {
+      const payload = await response.json().catch(() => ({}));
+      throw new Error(payload.error || `Upload failed (${response.status})`);
+    }
+
+    const uploaded = await response.json();
+    try {
+      await navigator.clipboard.writeText(uploaded.publicUrl);
+      toast(`Uploaded: ${uploaded.publicUrl} (copied)`, 'green');
+    } catch (_e) {
+      toast(`Uploaded: ${uploaded.publicUrl}`, 'green');
+    }
+  } catch (error) {
+    toast(`Upload failed: ${error.message}`, 'red');
+  } finally {
+    event.target.value = '';
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  RENDER FIELDS
+// ═══════════════════════════════════════════════════════
+function go(pageKey, btn){
+  currentPage = pageKey;
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+
+  const cfg = PAGES[pageKey];
+  document.getElementById('f-title').textContent = cfg.title;
+  document.getElementById('f-desc').textContent  = cfg.desc;
+
+  const body = document.getElementById('f-body');
+  body.innerHTML = '';
+
+  cfg.groups.forEach(group => {
+    const g = document.createElement('div');
+    g.className = 'fgroup';
+    g.innerHTML = `<div class="fgroup-title">${group.title}</div>`;
+
+    group.fields.forEach(field => {
+      const val = getVal(field.k);
+      const d = document.createElement('div');
+      d.className = 'field';
+      if(field.t === 'textarea'){
+        d.innerHTML = `<label>${field.l}</label><textarea data-k="${field.k}" oninput="onInput(this)">${esc(val)}</textarea>`;
+      } else if(field.t === 'image'){
+        const safeKey = field.k.replace('.','_');
+        const hasVal = val && val.trim();
+        d.innerHTML = `
+          <label>${field.l}</label>
+          <div class="img-field">
+            <div class="img-preview-wrap">
+              ${hasVal ? `<img id="img-preview-${safeKey}" src="${esc(val)}" onerror="this.style.display='none';document.getElementById('img-ph-${safeKey}').style.display='block'" />` : '<span></span>'}
+              <div class="img-preview-placeholder" id="img-ph-${safeKey}" style="display:${hasVal?'none':'block'}">No image set</div>
+            </div>
+            <div class="img-actions">
+              <input type="text" class="img-url-input" data-k="${field.k}" value="${esc(val)}" placeholder="Image path or URL…" oninput="onImgUrlInput(this)"/>
+              <button class="img-upload-btn" onclick="triggerImgUpload('${field.k}')">&#8593; Upload</button>
+              <button class="img-browse-btn" title="Browse library" onclick="openMediaLib('${field.k}')">&#8862;</button>
+            </div>
+          </div>`;
+      } else {
+        d.innerHTML = `<label>${field.l}</label><input type="text" data-k="${field.k}" value="${esc(val)}" oninput="onInput(this)"/>`;
+      }
+      g.appendChild(d);
+    });
+    body.appendChild(g);
+  });
+
+  // Navigate the preview iframe to the right page
+  navigatePreview(cfg.preview);
+}
+
+// ═══════════════════════════════════════════════════════
+//  LIVE PREVIEW — inject changes into iframe in real time
+// ═══════════════════════════════════════════════════════
+function onInput(el){
+  setVal(el.dataset.k, el.value);
+  clearTimeout(previewDebounce);
+  previewDebounce = setTimeout(()=> injectIntoFrame(), 300);
+}
+
+  function onImgUrlInput(el){
+    const val = el.value;
+    setVal(el.dataset.k, val);
+    // update inline preview
+    const safeKey = el.dataset.k.replace('.','_');
+    const preview = document.getElementById('img-preview-' + safeKey);
+    const ph = document.getElementById('img-ph-' + safeKey);
+    if(preview){ preview.src = val; preview.style.display = val ? '' : 'none'; }
+    if(ph){ ph.style.display = val ? 'none' : 'block'; }
+    clearTimeout(previewDebounce);
+    previewDebounce = setTimeout(()=> injectIntoFrame(), 300);
+  }
+
+  let _imgFieldTarget = null; // which field key the inline upload targets
+
+  function triggerImgUpload(fieldKey){
+    _imgFieldTarget = fieldKey;
+    document.getElementById('img-field-input').click();
+  }
+
+  async function onInlineImgUpload(event){
+    const file = event.target.files && event.target.files[0];
+    if(!file || !_imgFieldTarget) return;
+    const formData = new FormData();
+    formData.append('file', file);
+    try {
+      const resp = await fetch('/api/media/upload', { method:'POST', credentials:'include', body:formData });
+      if(!resp.ok){ const p = await resp.json().catch(()=>({})); throw new Error(p.error||'Upload failed'); }
+      const uploaded = await resp.json();
+      // set value and refresh the img-url-input + preview
+      setVal(_imgFieldTarget, uploaded.publicUrl);
+      const input = document.querySelector(`.img-url-input[data-k="${_imgFieldTarget}"]`);
+      if(input){ input.value = uploaded.publicUrl; onImgUrlInput(input); }
+      toast('Image uploaded', 'green');
+    } catch(err){ toast('Upload failed: '+err.message, 'red'); }
+    event.target.value = '';
+    _imgFieldTarget = null;
+  }
+
+function injectIntoFrame(){
+  try {
+    const win = document.getElementById('pframe').contentWindow;
+    if(!win || !win.document) return;
+    const doc = win.document;
+
+    // Map data keys → IDs in index.html
+    const idMap = {
+      // HOME
+      'home.hero_eyebrow':        'cms-hero-eyebrow',
+      'home.hero_heading':        'cms-hero-heading',
+      'home.hero_heading_italic': 'cms-hero-heading-italic',
+      'home.hero_para':           'cms-hero-para',
+      'home.pillar1_title':       'cms-pillar1-title',
+      'home.pillar1_desc':        'cms-pillar1-desc',
+      'home.pillar2_title':       'cms-pillar2-title',
+      'home.pillar2_desc':        'cms-pillar2-desc',
+      'home.pillar3_title':       'cms-pillar3-title',
+      'home.pillar3_desc':        'cms-pillar3-desc',
+      'home.quote_text':          'cms-quote-text',
+      'home.editorial_eyebrow':   'cms-editorial-eyebrow',
+      'home.editorial_heading':   'cms-editorial-heading',
+      'home.editorial_para1':     'cms-editorial-para1',
+      'home.editorial_para2':     'cms-editorial-para2',
+      'home.cta_eyebrow':         'cms-home-cta-eyebrow',
+      'home.cta_heading':         'cms-home-cta-heading',
+      'home.cta_para':            'cms-home-cta-para',
+      // ABOUT
+      'about.bio_para1':          'cms-bio-p1',
+      'about.bio_para2':          'cms-bio-p2',
+      'about.approach_intro':     'cms-approach-intro',
+      'about.approach1_title':    'cms-approach1-title',
+      'about.approach1_desc':     'cms-approach1-desc',
+      'about.approach2_title':    'cms-approach2-title',
+      'about.approach2_desc':     'cms-approach2-desc',
+      'about.approach3_title':    'cms-approach3-title',
+      'about.approach3_desc':     'cms-approach3-desc',
+      'about.t1_text':            'cms-t1-text',
+      'about.t1_author':          'cms-t1-author',
+      'about.t2_text':            'cms-t2-text',
+      'about.t2_author':          'cms-t2-author',
+      'about.t3_text':            'cms-t3-text',
+      'about.t3_author':          'cms-t3-author',
+      'about.t4_text':            'cms-t4-text',
+      'about.t4_author':          'cms-t4-author',
+      'about.cta_eyebrow':        'cms-about-cta-eyebrow',
+      'about.cta_heading':        'cms-about-cta-heading',
+      'about.cta_para':           'cms-about-cta-para',
+      // WEIGHT LOSS
+      'weightloss.hero_eyebrow':         'cms-wl-hero-eyebrow',
+      'weightloss.hero_heading':         'cms-wl-hero-heading',
+      'weightloss.hero_heading_italic':  'cms-wl-hero-heading-italic',
+      'weightloss.hero_para':            'cms-wl-hero-para',
+      'weightloss.prog1_heading':        'cms-prog1-heading',
+      'weightloss.prog1_intro':          'cms-prog1-intro',
+      'weightloss.prog1_detail':         'cms-prog1-detail',
+      'weightloss.prog2_heading':        'cms-prog2-heading',
+      'weightloss.prog2_intro':          'cms-prog2-intro',
+      'weightloss.prog2_detail':         'cms-prog2-detail',
+      'weightloss.explainer_heading':    'cms-explainer-heading',
+      'weightloss.explainer_para':       'cms-explainer-para',
+      'weightloss.cta_eyebrow':          'cms-wl-cta-eyebrow',
+      'weightloss.cta_heading':          'cms-wl-cta-heading',
+      'weightloss.cta_para':             'cms-wl-cta-para',
+      // MENOPAUSE
+      'menopause.hero_heading':          'cms-meno-hero-heading',
+      'menopause.hero_heading_italic':   'cms-meno-hero-heading-italic',
+      'menopause.hero_para':             'cms-meno-hero-para',
+      'menopause.stat_number':           'cms-meno-stat-number',
+      'menopause.stat_label':            'cms-meno-stat-label',
+      'menopause.stat_source':           'cms-meno-stat-source',
+      'menopause.intro_heading':         'cms-meno-intro-heading',
+      'menopause.intro_para1':           'cms-meno-intro-para1',
+      'menopause.intro_para2':           'cms-meno-intro-para2',
+      'menopause.intro_italic':          'cms-meno-intro-italic',
+      'menopause.evidence_para1':        'cms-meno-evidence-para1',
+      'menopause.evidence_para2':        'cms-meno-evidence-para2',
+      'menopause.featured_quote':        'cms-meno-quote',
+      'menopause.featured_quote_author': 'cms-meno-quote-author',
+      'menopause.cta_eyebrow':           'cms-meno-cta-eyebrow',
+      'menopause.cta_heading':           'cms-meno-cta-heading',
+      'menopause.cta_para':              'cms-meno-cta-para',
+      // BOOKING
+      'booking.hero_heading':    'cms-booking-hero-heading',
+      'booking.hero_para':       'cms-booking-hero-para',
+      'booking.consult_heading': 'cms-consult-heading',
+      'booking.consult_para':    'cms-consult-para',
+      'booking.s1_name':         'cms-s1-name',
+      'booking.s1_dur':          'cms-s1-dur',
+      'booking.s2_name':         'cms-s2-name',
+      'booking.s2_dur':          'cms-s2-dur',
+      'booking.s3_name':         'cms-s3-name',
+      'booking.s3_dur':          'cms-s3-dur',
+      'booking.s4_name':         'cms-s4-name',
+      'booking.s4_dur':          'cms-s4-dur',
+      'booking.booking_note':    'cms-booking-note',
+    };
+
+    Object.entries(idMap).forEach(([k, id]) => {
+      const el = doc.getElementById(id);
+      if(el) el.textContent = getVal(k);
+    });
+
+    // Phone & email (class-based)
+    doc.querySelectorAll('.cms-phone').forEach(el => el.textContent = DATA.site?.phone || '');
+    doc.querySelectorAll('.cms-email-text').forEach(el => el.textContent = DATA.site?.email || '');
+    doc.querySelectorAll('.cms-copyright').forEach(el => el.textContent = DATA.site?.copyright || '');
+    // Site logo in nav + footer logos
+    if (DATA.site?.logo_url) {
+      doc.querySelectorAll('#cms-img-logo, .cms-img-logo').forEach(el => { el.src = DATA.site.logo_url; });
+    }
+
+    // Images across pages
+    if (DATA.home?.img_hero) {
+      const el = doc.getElementById('cms-img-hero');
+      if (el) el.src = DATA.home.img_hero;
+    }
+    if (DATA.home?.img_card_wl) {
+      const el = doc.getElementById('cms-img-card-wl');
+      if (el) el.src = DATA.home.img_card_wl;
+    }
+    if (DATA.home?.img_card_meno) {
+      const el = doc.getElementById('cms-img-card-meno');
+      if (el) el.src = DATA.home.img_card_meno;
+    }
+    if (DATA.home?.img_editorial) {
+      const el = doc.getElementById('cms-img-editorial');
+      if (el) el.src = DATA.home.img_editorial;
+    }
+    if (DATA.about?.img_headshot) {
+      const el = doc.getElementById('cms-img-headshot');
+      if (el) el.src = DATA.about.img_headshot;
+    }
+    if (DATA.weightloss?.img_prog1) {
+      const el = doc.getElementById('cms-img-prog1');
+      if (el) el.src = DATA.weightloss.img_prog1;
+    }
+    if (DATA.weightloss?.img_prog2) {
+      const el = doc.getElementById('cms-img-prog2');
+      if (el) el.src = DATA.weightloss.img_prog2;
+    }
+    if (DATA.weightloss?.img_sidebar) {
+      const el = doc.getElementById('cms-img-wl-sidebar');
+      if (el) el.src = DATA.weightloss.img_sidebar;
+    }
+    if (DATA.menopause?.img_gallery1) {
+      const el = doc.getElementById('cms-img-meno-1');
+      if (el) el.src = DATA.menopause.img_gallery1;
+    }
+    if (DATA.menopause?.img_gallery2) {
+      const el = doc.getElementById('cms-img-meno-2');
+      if (el) el.src = DATA.menopause.img_gallery2;
+    }
+
+  } catch(e){ /* cross-origin safety */ }
+}
+
+function openChangePw(){
+  document.getElementById('pw-overlay').classList.add('open');
+  document.getElementById('pw-note').textContent = '';
+  document.getElementById('pw-current').value = '';
+  document.getElementById('pw-new').value = '';
+  document.getElementById('pw-confirm').value = '';
+}
+function closeChangePw(){
+  document.getElementById('pw-overlay').classList.remove('open');
+}
+async function changePassword(){
+  const currentPassword = document.getElementById('pw-current').value;
+  const newPassword = document.getElementById('pw-new').value;
+  const confirmPassword = document.getElementById('pw-confirm').value;
+  const note = document.getElementById('pw-note');
+  if(!currentPassword || !newPassword || !confirmPassword){ note.textContent = 'All fields are required.'; return; }
+  if(newPassword !== confirmPassword){ note.textContent = 'New password and confirmation do not match.'; return; }
+  if(newPassword.length < 8){ note.textContent = 'New password must be at least 8 characters.'; return; }
+  try {
+    await api('/api/auth/change-password', { method:'PUT', body: JSON.stringify({ currentPassword, newPassword }) });
+    note.textContent = 'Password updated.';
+    toast('Password changed', 'green');
+    setTimeout(closeChangePw, 700);
+  } catch(err){
+    note.textContent = err.message;
+  }
+}
+
+function openUsersPanel(){
+  document.getElementById('users-overlay').classList.add('open');
+  refreshUsers();
+}
+function closeUsersPanel(){
+  document.getElementById('users-overlay').classList.remove('open');
+}
+async function refreshUsers(){
+  const tbody = document.getElementById('users-tbody');
+  tbody.innerHTML = '<tr><td colspan="3" style="color:var(--text-soft)">Loading…</td></tr>';
+  try {
+    const users = await api('/api/users');
+    if(!users || !users.length){ tbody.innerHTML = '<tr><td colspan="3">No users found.</td></tr>'; return; }
+    tbody.innerHTML = users.map(u => `
+      <tr>
+        <td>${esc(u.email)}</td>
+        <td>
+          <select onchange="updateUserRole(${u.id}, this.value)" ${currentUser && currentUser.id === u.id ? 'disabled' : ''}>
+            <option value="editor" ${u.role==='editor'?'selected':''}>Editor</option>
+            <option value="admin" ${u.role==='admin'?'selected':''}>Admin</option>
+          </select>
+        </td>
+        <td>${currentUser && currentUser.id === u.id ? 'Current user' : ''}</td>
+      </tr>`).join('');
+  } catch(err){
+    tbody.innerHTML = `<tr><td colspan="3">Could not load users: ${esc(err.message)}</td></tr>`;
+  }
+}
+async function updateUserRole(userId, role){
+  try {
+    await api(`/api/users/${userId}/role`, { method:'PUT', body: JSON.stringify({ role }) });
+    toast('User role updated', 'green');
+    refreshUsers();
+  } catch(err){ toast('Role update failed: '+err.message, 'red'); }
+}
+async function createUser(){
+  const email = document.getElementById('new-user-email').value.trim();
+  const password = document.getElementById('new-user-password').value;
+  const role = document.getElementById('new-user-role').value;
+  const note = document.getElementById('users-note');
+  if(!email || !password){ note.textContent = 'Email and password are required.'; return; }
+  if(password.length < 8){ note.textContent = 'Password must be at least 8 characters.'; return; }
+  try {
+    await api('/api/users', { method:'POST', body: JSON.stringify({ email, password, role }) });
+    note.textContent = 'User created.';
+    document.getElementById('new-user-email').value = '';
+    document.getElementById('new-user-password').value = '';
+    document.getElementById('new-user-role').value = 'editor';
+    toast('User created', 'green');
+    refreshUsers();
+  } catch(err){ note.textContent = err.message; }
+}
+
+function openAuditLog(){
+  document.getElementById('audit-overlay').classList.add('open');
+  refreshAuditLog();
+}
+function closeAuditLog(){
+  document.getElementById('audit-overlay').classList.remove('open');
+}
+async function refreshAuditLog(){
+  const list = document.getElementById('audit-list');
+  list.innerHTML = '<p class="audit-empty">Loading…</p>';
+  try {
+    const logs = await api('/api/audit?limit=50');
+    if(!logs || !logs.length){
+      list.innerHTML = '<p class="audit-empty">No audit entries yet.</p>';
+      return;
+    }
+    list.innerHTML = logs.map(log => {
+      const when = log.created_at ? new Date(log.created_at).toLocaleString() : '';
+      const actor = log.actor_email || `User #${log.actor_user_id || 'unknown'}`;
+      const target = [log.target_type, log.target_id].filter(Boolean).join(': ');
+      return `
+        <div class="audit-row">
+          <div class="audit-top">
+            <div>
+              <div class="audit-action">${esc(log.action || '')}</div>
+              <div class="audit-meta">Actor: ${esc(actor || '')}${target ? ` · Target: ${esc(target)}` : ''}</div>
+            </div>
+            <div class="audit-time">${esc(when)}</div>
+          </div>
+        </div>`;
+    }).join('');
+  } catch(err){
+    list.innerHTML = `<p class="audit-empty">Could not load audit log: ${esc(err.message)}</p>`;
+  }
+}
+
+function navigatePreview(pageName){
+  document.getElementById('pload').classList.remove('gone');
+  const frame = document.getElementById('pframe');
+  frame.src = '/';
+  // After load we'll call showPage via frameLoaded
+  frame._targetPage = pageName;
+}
+
+function frameLoaded(){
+  document.getElementById('pload').classList.add('gone');
+  const frame = document.getElementById('pframe');
+  const target = frame._targetPage || 'home';
+  try {
+    const win = frame.contentWindow;
+    if(win && win.showPage && target !== 'home') win.showPage(target);
+  } catch(e){}
+  setTimeout(()=> injectIntoFrame(), 150);
+}
+
+function reloadPreview(){
+  document.getElementById('pload').classList.remove('gone');
+  document.getElementById('pframe').src = '/';
+}
+
+// ═══════════════════════════════════════════════════════
+//  HELPERS
+// ═══════════════════════════════════════════════════════
+function getVal(dotKey){
+  const [ns,k] = dotKey.split('.');
+  return (DATA[ns] && DATA[ns][k] !== undefined) ? DATA[ns][k] : '';
+}
+function setVal(dotKey, val){
+  const [ns,k] = dotKey.split('.');
+  if(!DATA[ns]) DATA[ns]={};
+  DATA[ns][k] = val;
+}
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function toast(msg, type=''){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast '+(type||'');
+  t.classList.add('up');
+  setTimeout(()=> t.classList.remove('up'), 4000);
+}
+function setStatus(msg, cls){
+  const s = document.getElementById('status');
+  s.textContent = msg;
+  s.className = 'status-chip ' + (msg?'show ':'')+cls;
+}
+
+function defaults(){
+  return {
+    site:{ phone:'+44 (0) 7000 000 000', email:'hello@karynwilkinshypnotherapy.co.uk', copyright:'© 2025 Karyn Wilkins Hypnotherapy. All rights reserved.', logo_url:'logo.png' },
+    home:{ hero_eyebrow:'GLP-1 Specialist · Hypnotherapy & Wellness Coaching', hero_heading:'Calm, confident,', hero_heading_italic:'in control.', hero_para:'Specialist hypnotherapy for GLP-1 users reducing medication, and for women ready to lose weight and find lasting calm — without injections.', pillar1_title:'GLP-1 Exit Programme', pillar1_desc:'Specialist support for reducing or coming off Wegovy, Ozempic or Mounjaro.', pillar2_title:'Medication-Free Weight Loss', pillar2_desc:'A structured hypnotherapy programme for lasting weight loss without injections.', pillar3_title:'Menopause Support', pillar3_desc:'Evidence-backed hypnotherapy for hot flushes, anxiety, sleep, and confidence.', quote_text:"The mind is everything. What you think, you become — and I'm here to help you think differently.", editorial_eyebrow:'A different kind of support', editorial_heading:'Change that starts from within', editorial_para1:"So many people come to me having tried every diet, every programme, every quick fix.", editorial_para2:"Hypnotherapy works at the subconscious level — where habits, emotional triggers and identity actually live.", cta_eyebrow:'Ready to begin?', cta_heading:'Your first session is a free, no-pressure conversation.', cta_para:"We'll talk about where you are, where you'd like to be, and how I can support you.", img_hero:'Homepage_image_1.webp', img_card_wl:'Weight_loss_support_page_image_1.webp', img_card_meno:'Menopause_support_woman.webp', img_editorial:'woman_with_coffee_cup.webp' },
+    about:{ bio_para1:"I'm a certified hypnotherapist and NLP practitioner, and one of the first people in the UK to certify as a GLP-1 Weight Loss Practitioner.", bio_para2:"My approach is warm, non-judgemental and deeply individual.", approach_intro:"Every session is tailored to you. There's no one-size-fits-all here.", approach1_title:'Listen & Understand', approach1_desc:"Your first session is a conversation. I'll listen without judgement.", approach2_title:'Personalise & Plan', approach2_desc:"Together, we'll map out a programme tailored to your specific needs.", approach3_title:'Support & Sustain', approach3_desc:"Through a blend of hypnotherapy, guided relaxation and practical tools.", t1_text:"I was fortunate to have a session of hypnotherapy with Karyn.", t1_author:'Mrs T.', t2_text:"My daughter has an extreme phobia of spiders… there is a HUGE difference.", t2_author:'Mrs M.', t3_text:"I was able to move around comfortably after our session.", t3_author:'Mrs C.', t4_text:"Reduced anxiety… I am sleeping through the night.", t4_author:'Mrs R.', cta_eyebrow:'Take the first step', cta_heading:"I'd love to hear your story.", cta_para:"Your free consultation is completely confidential.", img_headshot:'Karyn_Headshot.webp' },
+    weightloss:{ hero_eyebrow:'GLP-1 Specialist · Weight Loss Programmes', hero_heading:'Two routes.', hero_heading_italic:'One destination.', hero_para:"Whether you're reducing GLP-1 medication or looking for a non-injection route.", prog1_heading:'The GLP-1 Exit Programme', prog1_intro:'For people planning to reduce or stop Wegovy, Ozempic or Mounjaro.', prog1_detail:"This programme is for you if you are worried about weight regain.", prog2_heading:'A Hypnotherapy Alternative to GLP-1 Medication', prog2_intro:'Weight loss support without injections.', prog2_detail:"Most plans focus on rules. Hypnotherapy focuses on the automatic patterns underneath.", explainer_heading:'This is not generic weight-loss hypnosis', explainer_para:"GLP-1 users have a very specific psychological landscape.", cta_eyebrow:'Begin your transformation', cta_heading:'Ready to feel differently about food?', cta_para:"Your first session is free, confidential and completely no-pressure.", img_prog1:'weight_loss_programme_page_food_image.webp', img_prog2:'Home_page_image_2.webp', img_sidebar:'Weight_loss_support_page_image_1.webp' },
+    menopause:{ hero_heading:'Menopause', hero_heading_italic:'Support', hero_para:'A compassionate, whole-person approach to perimenopause and menopause.', stat_number:'74%', stat_label:'Reduction in hot flushes & night sweats', stat_source:'Hypnosis shown to be as effective as HRT — Psychology Today', intro_heading:'This is a transition, not an ending.', intro_para1:"Menopause can be one of the most disorienting seasons of a woman's life.", intro_para2:"This programme is designed specifically for women in perimenopause and menopause.", intro_italic:'No longer feel invisible and own this next chapter of your life.', evidence_para1:"Clinical research has shown that hypnotherapy can be an effective, natural approach.", evidence_para2:"For women seeking a non-hormonal, drug-free option, hypnotherapy is increasingly recognised.", featured_quote:"So many women see menopause as an ending. But I've discovered this is your moment to reinvent yourself.", featured_quote_author:'Oprah Winfrey', cta_eyebrow:'You deserve support', cta_heading:"Let's talk about where you are.", cta_para:"Your free consultation is a warm, judgement-free conversation.", img_gallery1:'Menopause_support_woman.webp', img_gallery2:'menopause_support_Image_2.webp' },
+    booking:{ hero_heading:'Your first step starts here.', hero_para:'Select a time that works for you. Your initial consultation is free, confidential, and completely no-pressure.', consult_heading:'Your free consultation', consult_para:"This is a relaxed, informal conversation — a chance for us to meet.", s1_name:'Free Initial Consultation', s1_dur:'30 min · Free', s2_name:'Individual Hypnotherapy Session', s2_dur:'60 min', s3_name:'Weight Loss Support Programme', s3_dur:'4, 8 or 12 sessions', s4_name:'Menopause Support Programme', s4_dur:'4, 8 or 12 sessions', booking_note:'Sessions are available online via secure video call, or in person.' }
+  };
+}
+</script>
+</body>
+</html>

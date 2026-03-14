@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>You've been invited</title>
+  <style>
+    body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #FAF6F3; margin: 0; padding: 40px 20px; }
+    .card { max-width: 520px; margin: 0 auto; background: #fff; border-radius: 4px; padding: 48px 40px; text-align: center; box-shadow: 0 4px 24px rgba(90,58,90,0.10); }
+    .logo { font-size: 1.4rem; color: #5A3A5A; margin-bottom: 8px; letter-spacing: 0.02em; }
+    .logo em { font-style: italic; color: #C9949B; }
+    h1 { font-size: 1.5rem; color: #5A3A5A; font-weight: 400; margin: 24px 0 12px; }
+    p { color: #5A4A56; font-size: 0.95rem; line-height: 1.7; margin-bottom: 32px; }
+    .btn { display: inline-block; background: #5A3A5A; color: #fff !important; text-decoration: none; padding: 14px 36px; border-radius: 2px; font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; }
+    .footer { margin-top: 32px; font-size: 0.75rem; color: #8A7A86; }
+    .footer a { color: #C9949B; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">Karyn Wilkins <em>Hypnotherapy</em></div>
+    <h1>You've been invited</h1>
+    <p>You've been invited to access the content management panel for <strong>karyn-demo.netlify.app</strong>.<br>Click the button below to set your password and get started.</p>
+    <a class="btn" href="{{ .ConfirmationURL }}">Accept Invite &amp; Set Password</a>
+    <div class="footer">
+      <p>If you didn't expect this email, you can safely ignore it.<br>
+      This link will expire in 24 hours.</p>
+    </div>
+  </div>
+</body>
+</html>
