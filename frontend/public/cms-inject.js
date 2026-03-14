@@ -144,9 +144,16 @@ function setAllHref(selector, href) {
 }
 function setSrc(id, url) {
   const el = document.getElementById(id);
-  if (el && url) el.src = url;
+  if (!el || !url) return;
+  el.addEventListener('load', () => el.classList.add('loaded'), { once: true });
+  el.addEventListener('error', () => el.classList.add('loaded'), { once: true });
+  el.src = url;
 }
 function setAllSrc(selector, url) {
   if (!url) return;
-  document.querySelectorAll(selector).forEach(el => { el.src = url; });
+  document.querySelectorAll(selector).forEach(el => {
+    el.addEventListener('load', () => el.classList.add('loaded'), { once: true });
+    el.addEventListener('error', () => el.classList.add('loaded'), { once: true });
+    el.src = url;
+  });
 }

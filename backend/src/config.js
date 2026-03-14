@@ -13,7 +13,7 @@ export const config = {
   port: Number(process.env.PORT || 4000),
   sessionSecret: process.env.SESSION_SECRET || "dev-secret-change-me",
   dbFile: path.resolve(backendRoot, process.env.DB_FILE || "./data/cms.sqlite"),
-  uploadsDir: path.resolve(backendRoot, "uploads"),
+  uploadsDir: path.resolve(backendRoot, process.env.UPLOADS_DIR || "./uploads"),
   frontendDist: path.resolve(backendRoot, "../frontend/dist"),
   legacyJsonPath: path.resolve(backendRoot, "../_data/content.json"),
   adminEmail: process.env.ADMIN_EMAIL || "admin@example.com",

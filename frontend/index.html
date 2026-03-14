@@ -1203,6 +1203,22 @@
       .symptoms-grid { grid-template-columns: repeat(2, 1fr); }
       .hero-actions { flex-direction: column; align-items: center; }
     }
+
+    .cms-img {
+      background: linear-gradient(90deg, #ede8ed 25%, #f5f0f5 50%, #ede8ed 75%);
+      background-size: 200% 100%;
+      animation: cms-shimmer 1.5s ease-in-out infinite;
+    }
+
+    .cms-img.loaded {
+      background: none;
+      animation: none;
+    }
+
+    @keyframes cms-shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
   </style>
 </head>
 <body>
@@ -1212,7 +1228,7 @@
 ════════════════════════════════════════════════════ -->
 <nav>
   <div class="nav-logo" onclick="showPage('home')">
-    <img id="cms-img-logo" src="logo.png" alt="Karyn Wilkins Hypnotherapy" style="height:44px; width:auto; display:block; object-fit:contain;" />
+    <img id="cms-img-logo" class="cms-img" alt="Karyn Wilkins Hypnotherapy" style="height:44px; width:auto; display:block; object-fit:contain;" />
   </div>
 
   <ul class="nav-links">
@@ -1261,7 +1277,7 @@
 
       <div class="hero-image-wrap">
         <div class="hero-image-frame">
-          <img id="cms-img-hero" src="Homepage_image_1.webp" alt="Karyn - GLP-1 Specialist Hypnotherapist" loading="lazy" />
+          <img id="cms-img-hero" class="cms-img" alt="Karyn - GLP-1 Specialist Hypnotherapist" loading="lazy" />
         </div>
         <div class="hero-image-deco"></div>
         <div class="hero-image-tag">
@@ -1327,7 +1343,7 @@
       </div>
       <div class="services-grid">
         <div class="service-card" onclick="showPage('weightloss')">
-          <img id="cms-img-card-wl" src="Weight_loss_support_page_image_1.webp" alt="Weight Loss Support" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&q=80&auto=format&fit=crop'" />
+          <img id="cms-img-card-wl" class="cms-img" alt="Weight Loss Support" loading="lazy" />
           <div class="service-card-overlay">
             <p class="eyebrow">Programme</p>
             <h3>Weight Loss Support</h3>
@@ -1335,7 +1351,7 @@
           </div>
         </div>
         <div class="service-card" onclick="showPage('menopause')">
-          <img id="cms-img-card-meno" src="Menopause_support_woman.webp" alt="Menopause Support" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&q=80&auto=format&fit=crop'" />
+          <img id="cms-img-card-meno" class="cms-img" alt="Menopause Support" loading="lazy" />
           <div class="service-card-overlay">
             <p class="eyebrow">Programme</p>
             <h3>Menopause Support</h3>
@@ -1351,7 +1367,7 @@
     <div style="max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:5rem; align-items:center;" class="editorial-grid">
 
       <div style="border-radius:2px; overflow:hidden;">
-        <img id="cms-img-editorial" src="woman_with_coffee_cup.webp" alt="" loading="lazy"
+        <img id="cms-img-editorial" class="cms-img" alt="" loading="lazy"
              style="width:100%; height:520px; object-fit:cover; object-position:center top; display:block;" />
       </div>
 
@@ -1380,7 +1396,7 @@
 
   <!-- FOOTER -->
   <footer>
-    <div class="footer-logo"><img class="cms-img-logo" src="logo.png" alt="Karyn Wilkins Hypnotherapy" style="height:40px; width:auto; object-fit:contain; filter:brightness(0) invert(1); opacity:0.85;" /></div>
+    <div class="footer-logo"><img class="cms-img-logo cms-img" alt="Karyn Wilkins Hypnotherapy" style="height:40px; width:auto; object-fit:contain; filter:brightness(0) invert(1); opacity:0.85;" /></div>
     <nav>
       <a onclick="showPage('home')">Home</a>
       <a onclick="showPage('about')">About</a>
@@ -1402,7 +1418,7 @@
     <div class="about-hero">
       <div class="about-image-wrap">
         <div class="about-image-frame">
-          <img id="cms-img-headshot" src="Karyn_Headshot.webp" alt="Karyn - GLP-1 Specialist Hypnotherapist" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=800&q=80&auto=format&fit=crop'" />
+          <img id="cms-img-headshot" class="cms-img" alt="Karyn - GLP-1 Specialist Hypnotherapist" loading="lazy" />
         </div>
         <div class="about-image-accent"></div>
       </div>
@@ -1503,7 +1519,7 @@
   </section>
 
   <footer>
-    <div class="footer-logo"><img class="cms-img-logo" src="logo.png" alt="Karyn Wilkins Hypnotherapy" style="height:40px; width:auto; object-fit:contain; filter:brightness(0) invert(1); opacity:0.85;" /></div>
+    <div class="footer-logo"><img class="cms-img-logo cms-img" alt="Karyn Wilkins Hypnotherapy" style="height:40px; width:auto; object-fit:contain; filter:brightness(0) invert(1); opacity:0.85;" /></div>
     <nav>
       <a onclick="showPage('home')">Home</a>
       <a onclick="showPage('about')">About</a>
@@ -1544,7 +1560,7 @@
   <section class="includes-section">
     <div class="includes-layout">
       <div class="includes-image">
-        <img id="cms-img-prog1" src="weight_loss_programme_page_food_image.webp" alt="GLP-1 Exit Programme" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&q=80&auto=format&fit=crop'" />
+        <img id="cms-img-prog1" class="cms-img" alt="GLP-1 Exit Programme" loading="lazy" />
       </div>
       <div class="includes-content">
         <p class="eyebrow">Programme 1</p>
@@ -1598,7 +1614,7 @@
   <section class="includes-section">
     <div class="includes-layout">
       <div class="includes-image">
-        <img id="cms-img-prog2" src="Home_page_image_2.webp" alt="Medication Alternative Programme" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&q=80&auto=format&fit=crop'" />
+        <img id="cms-img-prog2" class="cms-img" alt="Medication Alternative Programme" loading="lazy" />
       </div>
       <div class="includes-content">
         <p class="eyebrow">Programme 2</p>
@@ -1715,9 +1731,8 @@
 
       <!-- IMAGE RIGHT -->
       <div style="position:sticky; top:100px; border-radius:2px; overflow:hidden;">
-        <img id="cms-img-wl-sidebar" src="Weight_loss_support_page_image_1.webp" alt="" loading="lazy"
-             style="width:100%; height:auto; display:block; object-fit:cover; object-position:center top;"
-             onerror="this.parentElement.style.display='none'" />
+         <img id="cms-img-wl-sidebar" class="cms-img" alt="" loading="lazy"
+           style="width:100%; height:auto; display:block; object-fit:cover; object-position:center top;" />
       </div>
 
     </div>
@@ -1732,7 +1747,7 @@
   </section>
 
   <footer>
-    <div class="footer-logo"><img class="cms-img-logo" src="logo.png" alt="Karyn Wilkins Hypnotherapy" style="height:40px; width:auto; object-fit:contain; filter:brightness(0) invert(1); opacity:0.85;" /></div>
+    <div class="footer-logo"><img class="cms-img-logo cms-img" alt="Karyn Wilkins Hypnotherapy" style="height:40px; width:auto; object-fit:contain; filter:brightness(0) invert(1); opacity:0.85;" /></div>
     <nav>
       <a onclick="showPage('home')">Home</a>
       <a onclick="showPage('about')">About</a>
@@ -1779,7 +1794,7 @@
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;" class="meno-gallery-grid">
 
         <div style="overflow:hidden; border-radius:2px; background:var(--cream-warm);">
-          <img id="cms-img-meno-1" src="Menopause_support_woman.webp"
+          <img id="cms-img-meno-1" class="cms-img"
                alt=""
                loading="lazy"
                style="width:100%; height:480px; object-fit:cover; object-position:center top; display:block; transition:transform 0.6s ease;"
@@ -1788,7 +1803,7 @@
         </div>
 
         <div style="overflow:hidden; border-radius:2px; background:var(--cream-warm);">
-          <img id="cms-img-meno-2" src="menopause_support_Image_2.webp"
+          <img id="cms-img-meno-2" class="cms-img"
                alt=""
                loading="lazy"
                style="width:100%; height:480px; object-fit:cover; object-position:center top; display:block; transition:transform 0.6s ease;"
@@ -1902,7 +1917,7 @@
   </section>
 
   <footer>
-    <div class="footer-logo"><img class="cms-img-logo" src="logo.png" alt="Karyn Wilkins Hypnotherapy" style="height:40px; width:auto; object-fit:contain; filter:brightness(0) invert(1); opacity:0.85;" /></div>
+    <div class="footer-logo"><img class="cms-img-logo cms-img" alt="Karyn Wilkins Hypnotherapy" style="height:40px; width:auto; object-fit:contain; filter:brightness(0) invert(1); opacity:0.85;" /></div>
     <nav>
       <a onclick="showPage('home')">Home</a>
       <a onclick="showPage('about')">About</a>
@@ -2021,7 +2036,7 @@
   </div>
 
   <footer>
-    <div class="footer-logo"><img class="cms-img-logo" src="logo.png" alt="Karyn Wilkins Hypnotherapy" style="height:40px; width:auto; object-fit:contain; filter:brightness(0) invert(1); opacity:0.85;" /></div>
+    <div class="footer-logo"><img class="cms-img-logo cms-img" alt="Karyn Wilkins Hypnotherapy" style="height:40px; width:auto; object-fit:contain; filter:brightness(0) invert(1); opacity:0.85;" /></div>
     <nav>
       <a onclick="showPage('home')">Home</a>
       <a onclick="showPage('about')">About</a>
