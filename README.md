@@ -125,3 +125,12 @@ After startup, open:
 ```text
 http://localhost:4000
 ```
+
+## Default admin credentials
+
+| Field    | Value                  |
+|----------|------------------------|
+| Email    | `admin@example.com`    |
+| Password | `ChangeMeNow123!`      |
+
+These are set via `ADMIN_EMAIL` and `ADMIN_PASSWORD` environment variables (see [Environment variables](#environment-variables)). Change them before deploying to production.
